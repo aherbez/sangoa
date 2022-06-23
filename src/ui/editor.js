@@ -4,6 +4,7 @@ const EditorPanel = (props) => {
     return (
     <div className="panel-editor">
         Editor Panel
+        <div id="canvasAttach"></div>
     </div>)
 }
 
