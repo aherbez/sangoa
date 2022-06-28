@@ -34,9 +34,11 @@ const fragmentShader = `
     #define MIN_DIST 0.01
     #define MAX_DIST 100.
 
+    #define TWO_PI 6.28318530718
+
     #define TEX_SIZE 256.
-    #define PIX_PER_SHAPE 4.
-    #define PIX_SIZE 4.
+    #define PIX_PER_SHAPE 5.
+    #define PIX_SIZE 2.
 
     uniform vec2 resolution;
     uniform float uTime;
@@ -86,10 +88,16 @@ const fragmentShader = `
         return uv;
     }
 
-    vec3 getPos(vec2 baseUv, vec2 offset) {
+    vec3 getData(vec2 baseUv, vec2 offset) {
         // get the position
         vec3 pos = texture2D(shapesTex, baseUv + offset).xyz;
         return pos;
+    }
+
+    mat2 rotMatrix(float a) {
+        float s = sin(a);
+        float c = cos(a);
+        return mat2(c, -s, s, c);   
     }
 
     float scene(vec3 p) {
@@ -102,34 +110,37 @@ const fragmentShader = `
         {
             vec2 baseUv = getBaseUV(i);
 
-            vec3 pos = getPos(baseUv, pixOffset * vec2(0.5, -0.5));
+            vec3 pos = getData(baseUv, pixOffset * vec2(0.5, -0.5));
             pos *= 5.;
 
-            vec3 rot = getPos(baseUv, pixOffset * vec2(1.5, -0.5));
+            vec3 rot = getData(baseUv, pixOffset * vec2(1.5, -0.5));
+            rot -= 0.5;
+            rot *= TWO_PI;
 
-            vec3 bounds = getPos(baseUv, pixOffset * vec2(2.5, -0.5));
+            vec3 p2 = p;
+            p2.yz *= rotMatrix(rot.r);
+            p2.xz *= rotMatrix(rot.g);
+            p2.xy *= rotMatrix(rot.b);
+            p2 -= pos;
+
+            vec3 bounds = getData(baseUv, pixOffset * vec2(2.5, -0.5));
             bounds *= 5.;
 
-            vec3 data = getPos(baseUv, pixOffset * vec2(3.5, -0.5));
+            vec3 data = getData(baseUv, pixOffset * vec2(3.5, -0.5));
             int type = int(data.x * 256.) % 64;
             int operation = int((data.x * 256.) / 64.);
             float smoothAmt = data.g;
 
+
             float nd = 0.;
-            if (type == 1) nd = sphere(p-pos, vec4(vec3(0.), bounds.x));
-            if (type == 2) nd = box(p-pos, bounds);
+            if (type == 1) nd = sphere(p2, vec4(vec3(0.), bounds.x));
+            if (type == 2) nd = box(p2, bounds);
 
             if (operation == 1) d = smoothUnion(d, nd, smoothAmt);
-            if (operation == 2) d = smoothSubtract(nd, d, smoothAmt); // max(-nd, d);
+            if (operation == 2) d = smoothSubtract(nd, d, smoothAmt);
+            if (operation == 3) d = smoothIntersect(d, nd, smoothAmt);
             // d = min(d, nd);
         }
-
-        /*
-        float sd = sphere(p, vec4(0., 1., 3., 1.));
-        float bd = box(p, vec3(0., 2., 3.), vec3(0.5));
-        float d = min(pd, sd);
-        d = min(d, bd);
-        */
 
         return d;
     }
@@ -167,8 +178,8 @@ const fragmentShader = `
         vec3 n = getNormal(p);
 
         float dif = clamp(dot(n,l), 0., 1.);
-        float d = rayMarch(p + n*MIN_DIST*2., l);
-        if (d < length(lightPos - p)) dif *= .1;
+        // float d = rayMarch(p + n*MIN_DIST*2., l);
+        // if (d < length(lightPos - p)) dif *= .1;
 
         return dif;
     }
@@ -186,7 +197,6 @@ const fragmentShader = `
         float dif = getLight(p);
 
         vec3 color = vec3(dif);
-        // color = getPos(1);
 
         gl_FragColor = vec4(color, 1.);
     }
@@ -263,36 +273,41 @@ const threeShapes = [
 const subTest = [
     {
         t: 2,
-        p: [0, 0.5, 3],
-        r: [0,0,0],
-        b: [1,1,1],
+        p: [0, 1.75, 3],
+        r: [-30,0,-30],
+        b: [1,0.5,0.5],
         op: 1,
-        sm: 0
+        sm: 0,
+        cl: [255,0,0]
     },
     {
         t: 1,
         p: [0., 1.5, 3],
         r: [0,0,0],
         b: [0.75, 0.75, 0.75],
-        op: 1,
-        sm: 0.25
+        op: 2,
+        sm: 0.25,
+        cl: [0,255,0]
     },
     {
         t: 1,
-        p: [0.5, 2.5, 3],
+        p: [0.5, 2.5, 2.5],
         r: [0,0,0],
         b: [0.5, 0.75, 0.75],
         op: 1,
-        sm: 0.25
+        sm: 0.25,
+        cl: [0,0,255]
     },
 
 ]
 
 const shapes = subTest;
 
-const makeColor = (inVals, bounds) => {
+const makeColor = (inVals, maxV, minV = 0) => {
+    const range = maxV - minV;
+    
     const col = inVals.map(v => {
-        return Math.floor((v / bounds) * 256)
+        return Math.floor(((v - minV)/ range) * 256)
     });
 
     const colSt = `rgb(${col[0]},${col[1]},${col[2]})`;
@@ -301,8 +316,8 @@ const makeColor = (inVals, bounds) => {
 
 const makeTex = (shapeList) => {
     const texSize = 256;
-    const sqSize = 4;
-    const pixPerShape = 4;
+    const sqSize = 2;
+    const pixPerShape = 5;
 
     const ctx = document.createElement('canvas').getContext('2d');
     ctx.canvas.width = texSize;
@@ -330,7 +345,7 @@ const makeTex = (shapeList) => {
         ctx.fillRect(0, 0, sqSize, sqSize);
         
         // draw rot
-        ctx.fillStyle = makeColor(s.r, 360);
+        ctx.fillStyle = makeColor(s.r, 360, -360);
         ctx.fillRect(sqSize, 0, sqSize, sqSize);
 
         // draw bounds
@@ -346,6 +361,10 @@ const makeTex = (shapeList) => {
         ctx.fillStyle = `rgb(${r},${g},0)`;
         ctx.fillRect(3 * sqSize, 0, sqSize, sqSize);
         
+        const color = s.cl || [255,255,255];
+        ctx.fillStyle = `rgb(${color[0]},${color[1]},${color[2]})`;
+        ctx.fillRect(4 * sqSize, 0, sqSize, sqSize);
+
         // ctx.strokeStyle = 'white';
         // ctx.strokeRect(0, 0, sqSize * pixPerShape, sqSize);
     
@@ -366,7 +385,7 @@ const SDF = (props) => {
     const shaderRef = useRef();
     const shapeTex = makeTex(shapes);
     shapeTex.needsUpdate = true;
-    console.log(shapeTex);
+
     const uniforms = {
         resolution: { value: new THREE.Vector2(700, 700)},
         uTime: {value: 0.},
