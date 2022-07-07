@@ -298,7 +298,6 @@ const subTest = [
         sm: 0.25,
         cl: [0,0,255]
     },
-
 ]
 
 const shapes = subTest;
@@ -380,10 +379,12 @@ const makeTex = (shapeList) => {
 
 const SDF = (props) => {
 
+    const geo = props.geo || [];
+
     const tex = useLoader(THREE.TextureLoader, 'tmp.png');
 
     const shaderRef = useRef();
-    const shapeTex = makeTex(shapes);
+    const shapeTex = makeTex(geo);
     shapeTex.needsUpdate = true;
 
     const uniforms = {
