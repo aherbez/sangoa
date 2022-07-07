@@ -1,6 +1,6 @@
 import { BufferGeometry, BufferAttribute } from "three";
 import { Suspense } from "react";
-import { tetraPoints } from "../geo/marchingTetra";
+import { tetraPoints, processTetra } from "../geo/marchingTetra";
 
 /*
                 <mesh>
@@ -66,7 +66,18 @@ const MarchingTetra = (props) => {
     allTPoints.push(bp[0], bp[3], bp[2]);
     allTPoints.push(bp[1], bp[2], bp[3]);
     allTPoints.push(bp[0], bp[1], bp[3]);
-    console.log('allTPoints', allTPoints);
+
+    const ptValues = [
+        .1, -0.2, -0.8, 1
+    ];
+
+
+    const mtMesh = processTetra(bp, ptValues);
+    const faceVertsRaw = [];
+    mtMesh.forEach(v => {
+        faceVertsRaw.push(...v);
+    });
+    const faceVerts = new Float32Array(faceVertsRaw);
 
     const rawVerts = [];
     allTPoints.forEach(p => {
@@ -81,20 +92,20 @@ const MarchingTetra = (props) => {
         <Suspense fallback={null}>
             <group>
 
+
+
                 <mesh>
                     <bufferGeometry attach="geometry">
                         <bufferAttribute
                             attach="attributes-position"
-                            array={tetraVerts}
-                            count={tetraVerts.length / 3}
+                            array={faceVerts}
+                            count={faceVerts.length / 3}
                             itemSize={3}
                         />
                         <meshBasicMaterial
-                            color={"green"}
-                            transparent={true}
                         />
                     </bufferGeometry>
-                </mesh>
+                </mesh>                
             </group>
         </Suspense>
     );
