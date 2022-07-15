@@ -1,4 +1,4 @@
-import { BufferGeometry, BufferAttribute } from "three";
+// import { BufferGeometry, BufferAttribute } from "three";
 import { Suspense } from "react";
 import { tetraPoints, processTetra } from "../geo/marchingTetra";
 
@@ -24,7 +24,7 @@ import { tetraPoints, processTetra } from "../geo/marchingTetra";
 
 const MarchingTetra = (props) => {
     
-    const geo = props.geo || [];
+    // const geo = props.geo || [];
 
     const n = 100;
     let positions = new Float32Array(n * 3);
@@ -51,6 +51,7 @@ const MarchingTetra = (props) => {
         -1.0, -1.0,  1.0
     ] );
 
+    /*
     const uvs = new Float32Array([
         0, 0,
         1, 0,
@@ -59,6 +60,7 @@ const MarchingTetra = (props) => {
         0, 1,
         0, 0
     ]);
+    */
 
     const bp = tetraPoints(2);
     const allTPoints = [];
@@ -70,7 +72,6 @@ const MarchingTetra = (props) => {
     const ptValues = [
         .1, -0.2, -0.8, 1
     ];
-
 
     const mtMesh = processTetra(bp, ptValues);
     const faceVertsRaw = [];
@@ -84,16 +85,13 @@ const MarchingTetra = (props) => {
         rawVerts.push(...p);
     })
 
-    const tetraVerts = new Float32Array(rawVerts);
+    // const tetraVerts = new Float32Array(rawVerts);
 
     positions = vertices;
     
     return(
         <Suspense fallback={null}>
             <group>
-
-
-
                 <mesh>
                     <bufferGeometry attach="geometry">
                         <bufferAttribute

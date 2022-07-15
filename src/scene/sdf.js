@@ -203,72 +203,14 @@ const fragmentShader = `
 
 `;
 
+/*
 const OP_UNION = 1;
 const OP_SUB = 2;
 const OP_INTERSECT = 3;
 
 const SHP_SPHERE = 1;
 const SHP_BOX = 2;
-
-const oneShape = [
-    {
-        t: 2,
-        p: [0.5, 1.5, 3],
-        r: [0,0,0],
-        b: [0.25,1,1],
-        op: 1,
-        sm: 0
-    }
-];
-
-const oneShape2 = [
-    {
-        t: 2,
-        p: [1.5, 1.5, 3],
-        r: [0,0,0],
-        b: [1,1,1],
-        op: 1,
-        sm: 0.5
-    }
-];
-
-const oneShape3 = [
-    {
-        t: 2,
-        p: [2, 1.5, 3],
-        r: [0,0,0],
-        b: [0.5,1,1],
-        op: 1,
-        sm: 0.5
-    }
-];
-
-const threeShapes = [
-    {
-        t: 1,
-        p: [0, 1.5, 3],
-        r: [0,0,0],
-        b: [0.2,1,1],
-        op: 1,
-        sm: 0
-    },
-    {
-        t: 2,
-        p: [0.5, 1.5, 3],
-        r: [0,0,0],
-        b: [0.5,1,1],
-        op: 1,
-        sm: 0.5
-    },
-    {
-        t: 2,
-        p: [1, 1.5, 3],
-        r: [0,0,0],
-        b: [0.7,1,1],
-        op: 1,
-        sm: 0.5
-    }
-];
+*/
 
 const subTest = [
     {
@@ -381,7 +323,7 @@ const SDF = (props) => {
 
     const geo = props.geo || [];
 
-    const tex = useLoader(THREE.TextureLoader, 'tmp.png');
+    // const tex = useLoader(THREE.TextureLoader, 'tmp.png');
 
     const shaderRef = useRef();
     const shapeTex = makeTex(geo);
