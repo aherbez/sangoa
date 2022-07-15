@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { useFrame, useLoader } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import { useRef, useLayoutEffect, Suspense } from 'react';
 
 /*
