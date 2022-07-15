@@ -40,7 +40,7 @@ const testShapes = [
 
 const World = (props) => {
 
-    const showSDF = false;
+    const showSDF = true;
 
     return (
         <div className="panel-world">
