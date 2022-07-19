@@ -1,44 +1,33 @@
+import { useContext } from "react";
 import { Canvas } from "@react-three/fiber";
-// import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { OrbitControls } from "@react-three/drei";
-// import Box from "./box";
 import SDF from "./sdf";
 import MarchingTetra from "./marchingTetraTest";
-
-
-// <SDF />
+import { store } from "../data/store";
 
 const testShapes = [
     {
         t: 2,
         p: [0, 1.75, 3],
-        r: [-30,0,-30],
-        b: [1,0.5,0.5],
+        r: [-30,0,-10],
+        b: [2,0.5,0.5],
         op: 1,
-        sm: 0,
-        cl: [255,0,0]
+        sm: 0    
     },
     {
         t: 1,
-        p: [0., 1.5, 3],
+        p: [0., 1.7, 3],
         r: [0,0,0],
         b: [0.75, 0.75, 0.75],
         op: 2,
-        sm: 0.25,
-        cl: [0,255,0]
-    },
-    {
-        t: 1,
-        p: [0.5, 2.5, 2.5],
-        r: [0,0,0],
-        b: [0.5, 0.75, 0.75],
-        op: 1,
-        sm: 0.25,
-        cl: [0,0,255]
-    },
+        sm: 0.02,
+    }
 ]
 
 const World = (props) => {
+
+    const ctx = useContext(store);
+    console.log('SDF', ctx.state.objects, testShapes);
 
     const showSDF = true;
 
@@ -50,8 +39,8 @@ const World = (props) => {
                 <directionalLight position={[10, 10, 10]} />
 
                 {showSDF ? 
-                    <SDF
-                        geo={testShapes}
+                    <SDF 
+                        geo={ctx.state.objects}
                     />
                     :
                     <MarchingTetra 

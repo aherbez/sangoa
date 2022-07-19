@@ -11,7 +11,7 @@ export const box = (p, bounds) => {
         Math.abs(p.y),
         Math.abs(p.z)
     ).sub(bounds);
-
+    
     
     return 1.0;
 }

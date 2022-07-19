@@ -1,6 +1,8 @@
+import { useContext } from 'react';
+import { store } from '../data/store';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
-import { useRef, useLayoutEffect, Suspense } from 'react';
+import { useRef, useLayoutEffect, Suspense, useEffect } from 'react';
 
 /*
 unite(a,b) { return min(a,b)}
@@ -30,7 +32,7 @@ const vertexShader = `
 `;
 
 const fragmentShader = `
-    #define MAX_STEPS 100
+    #define MAX_STEPS 32
     #define MIN_DIST 0.01
     #define MAX_DIST 100.
 
@@ -220,7 +222,6 @@ const subTest = [
         b: [1,0.5,0.5],
         op: 1,
         sm: 0,
-        cl: [255,0,0]
     },
     {
         t: 1,
@@ -229,7 +230,6 @@ const subTest = [
         b: [0.75, 0.75, 0.75],
         op: 2,
         sm: 0.25,
-        cl: [0,255,0]
     },
     {
         t: 1,
@@ -238,7 +238,6 @@ const subTest = [
         b: [0.5, 0.75, 0.75],
         op: 1,
         sm: 0.25,
-        cl: [0,0,255]
     },
 ]
 
@@ -256,6 +255,9 @@ const makeColor = (inVals, maxV, minV = 0) => {
 }
 
 const makeTex = (shapeList) => {
+
+    console.log('makeTex', shapeList);
+
     const texSize = 256;
     const sqSize = 2;
     const pixPerShape = 5;
@@ -305,9 +307,6 @@ const makeTex = (shapeList) => {
         const color = s.cl || [255,255,255];
         ctx.fillStyle = `rgb(${color[0]},${color[1]},${color[2]})`;
         ctx.fillRect(4 * sqSize, 0, sqSize, sqSize);
-
-        // ctx.strokeStyle = 'white';
-        // ctx.strokeRect(0, 0, sqSize * pixPerShape, sqSize);
     
         ctx.restore();
     });
@@ -321,40 +320,40 @@ const makeTex = (shapeList) => {
 
 const SDF = (props) => {
 
-    const geo = props.geo || [];
+    // const ctx = useContext(store);
+    // console.log('SDF', ctx);
 
-    // const tex = useLoader(THREE.TextureLoader, 'tmp.png');
+    const geo = props.geo || [];
+    console.log(geo);
 
     const shaderRef = useRef();
     const shapeTex = makeTex(geo);
     shapeTex.needsUpdate = true;
 
     const uniforms = {
-        resolution: { value: new THREE.Vector2(700, 700)},
+        resolution: { value: new THREE.Vector2(500, 500)},
         uTime: {value: 0.},
         shapesTex: { type: "t", value: shapeTex},
-        numShapes: { value: shapes.length},
+        numShapes: { value: geo.length},
         tmp: {value: new THREE.Vector3(0, 76, 153)}
     }
 
     useFrame(({clock}) => {
-        // console.log(clock.getElapsedTime());
         shaderRef.current.uniforms.uTime = { value: clock.getElapsedTime()};
-        // shaderRef.current.uniform.shapeTex = { value: shapeTex};
-        shapeTex.needsUpdate = true;
-    })
+    });
 
-    useLayoutEffect(() => {
-        // shaderRef.current.uniforms.shapeTex.value.needsUpdate = true;
-    })
-
-/*
-    <meshLambertMaterial
-        ref={shaderRef}
-        map={shapeTex}
-    />
-*/
-
+    /*
+    useEffect(() => {
+        console.log(`useEffect`);
+        const newTex = makeTex(geo);
+        
+        shaderRef.current.uniforms.shapesTex.value = newTex;
+        shaderRef.current.uniforms.numShapes.value = geo.length;
+        console.log(shaderRef.current.uniforms);
+        shaderRef.current.uniforms.shapesTex.needsUpdate = true;
+    }, [geo]);
+    */
+   
     return (
         <Suspense fallbacl={null}>
             <mesh>

@@ -47,8 +47,8 @@ body, html {
 }
 
 .panel-world {
-  width: 700px;
-  height: 700px;
+  width: 500px;
+  height: 500px;
   border-right: 2px solid #000;
 }
 
