@@ -27,7 +27,7 @@ const testShapes = [
 const World = (props) => {
 
     const ctx = useContext(store);
-    console.log('SDF', ctx.state.objects, testShapes);
+    // console.log('SDF', ctx.state.objects, testShapes);
 
     const showSDF = true;
 

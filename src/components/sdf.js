@@ -323,7 +323,7 @@ const SDF = (props) => {
     // const ctx = useContext(store);
     // console.log('SDF', ctx);
 
-    const geo = props.geo || [];
+    const geo = subTest; // props.geo || subTest;
     console.log(geo);
 
     const shaderRef = useRef();

@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { store } from '../data/store';
-import '../App.css';
+// import '../App.css';
 
 const EditorPanel = (props) => {
     
