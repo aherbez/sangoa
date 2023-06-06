@@ -1,4 +1,4 @@
-import { store } from "../../src/data/store";
+import { store } from "../../data/store";
 import { useContext } from "react";
 import { boxData, randPos } from "../../data/objHelpers";
 import styles from "./panes.module.css"

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { store } from "../../src/data/store";
+import { store } from "../../data/store";
 
 const Prim = (props) => {
     const globalState = useContext(store);

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { store, StateProvider } from "../src/data/store";
+import { store, StateProvider } from "../data/store";
 import Pane3d from "./panes/pane3d";
 import PaneUI from "./panes/paneUI";
 

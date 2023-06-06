@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { store } from "../../src/data/store";
+import { store } from "../../data/store";
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import Prim from "../geo/prim";

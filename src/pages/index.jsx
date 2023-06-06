@@ -1,6 +1,4 @@
-import { StateProvider, store } from "../src/data/store";
-import World from "../src/components/world";
-import EditorPanel from "../src/ui/editor";
+import { StateProvider, store } from "../data/store";
 import Editor from "../components/editor";
 
 const Home = () => {
