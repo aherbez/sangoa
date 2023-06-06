@@ -7,7 +7,7 @@ const PaneUI = (props) => {
     
     const globalState = useContext(store);
     const { dispatch } = globalState;
-    console.log('paneUI', globalState);
+    // console.log('paneUI', globalState);
     
     const addBox = () => {
         console.log('add box');

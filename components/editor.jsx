@@ -7,10 +7,10 @@ const Editor = (props) => {
     const globalState = useContext(store);
     const { dispatch } = globalState;
 
-    console.log('editor', globalState);
+    // console.log('editor', globalState);
 
     const onSelect = (id) => {
-        console.log('select', id);
+        // console.log('select', id);
         dispatch({
             type: 'select',
             payload: id

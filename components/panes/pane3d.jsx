@@ -8,7 +8,7 @@ import styles from "./panes.module.css"
 const Pane3d = (props) => {
     const globalState = useContext(store);
     const { dispatch } = globalState;
-    console.log('pane3d', globalState);
+    // console.log('pane3d', globalState);
     
     // console.log('pane3d', Array.from(globalState.state.objLookup));
 
