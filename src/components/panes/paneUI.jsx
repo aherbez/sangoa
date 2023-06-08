@@ -1,19 +1,22 @@
 import { store } from "../../data/store";
 import { useContext } from "react";
 import { boxData, sphereData, randPos } from "../../data/objHelpers";
+import SDF from "../sdf";
 import styles from "./panes.module.css"
 
 const PaneUI = (props) => {
     
     const globalState = useContext(store);
     const { dispatch } = globalState;
-    // console.log('paneUI', globalState);
+    console.log('paneUI', globalState);
+
+    const objects = Array.from(globalState.state.objLookup.values());
     
     const addBox = () => {
         console.log('add box');
         
         const b = boxData(1);
-        b.p = randPos(10);
+        b.p = randPos(5);
         
         dispatch({ 
             type: 'add',
@@ -25,7 +28,7 @@ const PaneUI = (props) => {
         console.log('add sphere');
 
         const s = sphereData(1);
-        s.p = randPos(10);
+        s.p = randPos(5);
 
         dispatch({
             type: 'add',
@@ -33,6 +36,33 @@ const PaneUI = (props) => {
         });
     }
 
+    const obj1 = () => {
+        dispatch({
+            type: 'add',
+            payload: {
+                t: 1,
+                p: [0, 1.75, 3],
+                r: [-30,0,-30],
+                b: [1,0.5,0.5],
+                op: 1,
+                sm: 0
+            }
+        });
+    }
+
+    const obj2 = () => {
+        dispatch({
+            type: 'add',
+            payload: {
+                t: 2,
+                p: [0., 1.5, 3],
+                r: [0,0,0],
+                b: [0.325, 0.75, 0.75],
+                op: 1,
+                sm: 0.25
+            }
+        });
+    }
 
     const inflate = () => {
         console.log('inflate');
@@ -94,6 +124,9 @@ const PaneUI = (props) => {
                 </div>
             }
 
+            <SDF 
+                objects={objects}
+            />
         </div>
     );
 }

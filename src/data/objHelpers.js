@@ -1,5 +1,5 @@
-const SHAPE_CUBE = 1;
-const SHAPE_SPHERE = 2;
+const SHAPE_CUBE = 2;
+const SHAPE_SPHERE = 1;
 
 export const boxData = (s) => {
     const size = s || 1;
@@ -32,7 +32,7 @@ export const randPos = (range) => {
     
     return [
         Math.random() * range + min,
-        Math.random() * range + min,
+        Math.random() * range,
         Math.random() * range + min,
     ];
 }

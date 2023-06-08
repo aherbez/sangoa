@@ -15,11 +15,11 @@ const Prim = (props) => {
 
     const makeGeo = (data) => {
         switch (data.t) {
-            case 1:
+            case 2:
                 return (
                     <boxGeometry args={data.b} />
                 );
-            case 2:
+            case 1:
                 return (
                     <sphereGeometry args={[data.b[0], 32, 32]} />
                 );

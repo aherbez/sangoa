@@ -1,8 +1,11 @@
 import { useContext } from 'react';
 import { store } from '../data/store';
 import * as THREE from 'three';
-import { useFrame } from '@react-three/fiber';
-import { useRef, useLayoutEffect, Suspense, useEffect } from 'react';
+import { useFrame, Canvas } from '@react-three/fiber';
+import { useRef, useLayoutEffect, Suspense, useEffect, useState } from 'react';
+import { bakeShapeTexture } from '@/data/texureUtils';
+import styles from "./panes/panes.module.css"
+
 
 /*
 unite(a,b) { return min(a,b)}
@@ -190,7 +193,7 @@ const fragmentShader = `
         vec2 uv = (gl_FragCoord.xy / resolution.xy) - 1.;
         uv.x *= resolution.x / resolution.y;
 
-        vec3 pos = vec3(0., 2., -3.);
+        vec3 pos = vec3(0., 2., -5.);
         vec3 dir = normalize(vec3(uv.x, uv.y, 2.));
 
         float d = rayMarch(pos, dir);
@@ -241,6 +244,25 @@ const subTest = [
     },
 ]
 
+const test1 = [
+    {
+        t: 2,
+        p: [0, 1.75, 3],
+        r: [-30,0,-30],
+        b: [1,0.5,0.5],
+        op: 1,
+        sm: 0,
+    },
+    {
+        t: 1,
+        p: [0., 1.5, 3],
+        r: [0,0,0],
+        b: [0.75, 0.75, 0.75],
+        op: 2,
+        sm: 0.25,
+    }
+]
+
 const shapes = subTest;
 
 const makeColor = (inVals, maxV, minV = 0) => {
@@ -254,6 +276,7 @@ const makeColor = (inVals, maxV, minV = 0) => {
     return colSt;
 }
 
+/*
 const makeTex = (shapeList) => {
 
     console.log('makeTex', shapeList);
@@ -311,24 +334,39 @@ const makeTex = (shapeList) => {
         ctx.restore();
     });
 
-    document.getElementById("canvasAttach").innerHTML = '';
-    document.getElementById("canvasAttach").appendChild(ctx.canvas);
+    // document.getElementById("canvasAttach").innerHTML = '';
+    // document.getElementById("canvasAttach").appendChild(ctx.canvas);
 
     return new THREE.CanvasTexture(ctx.canvas);
 }
-
+*/
 
 const SDF = (props) => {
 
-    // const ctx = useContext(store);
     // console.log('SDF', ctx);
+    const [shapeTex, setShapeTex] = useState(null);
 
-    const geo = subTest; // props.geo || subTest;
-    console.log(geo);
+    const geo = test1; // props.objects; // props.geo || subTest;
 
     const shaderRef = useRef();
-    const shapeTex = makeTex(geo);
-    shapeTex.needsUpdate = true;
+    // shapeTex.needsUpdate = true;
+
+    /*
+    useEffect(() => {
+        console.log('baking texture');
+        setShapeTex(bakeShapeTexture(props.objects));        
+    }, [props.objects]);
+    */
+
+    useEffect(() => {
+        if (props.objects.length > 0 && !!shaderRef.current) {
+            shaderRef.current.uniforms.shapesTex.value = bakeShapeTexture(props.objects);
+            shaderRef.current.uniforms.numShapes.value = props.objects.length;
+            console.log('uniforms', shaderRef.current.uniforms);
+            shaderRef.current.uniforms.shapesTex.needsUpdate = true;
+            shaderRef.current.needsUpdate = true;
+        }
+    }, [props.objects]);
 
     const uniforms = {
         resolution: { value: new THREE.Vector2(500, 500)},
@@ -338,9 +376,11 @@ const SDF = (props) => {
         tmp: {value: new THREE.Vector3(0, 76, 153)}
     }
 
+    /*
     useFrame(({clock}) => {
         shaderRef.current.uniforms.uTime = { value: clock.getElapsedTime()};
     });
+    */
 
     /*
     useEffect(() => {
@@ -355,17 +395,23 @@ const SDF = (props) => {
     */
    
     return (
-        <Suspense fallbacl={null}>
-            <mesh>
-                <planeBufferGeometry args={[2,2,1,1]} />
-                <shaderMaterial
-                    ref={shaderRef}
-                    vertexShader={vertexShader}
-                    fragmentShader={fragmentShader}
-                    uniforms={uniforms}
-                />
-            </mesh>
-        </Suspense>
+        <div className={styles.paneSDF}>
+            <Suspense fallback={null}>
+                <Canvas>
+                    <mesh>
+                        <planeBufferGeometry args={[2,2,1,1]} />
+                        <shaderMaterial
+                            ref={shaderRef}
+                            vertexShader={vertexShader}
+                            fragmentShader={fragmentShader}
+                            uniforms={uniforms}
+                        />
+                    </mesh>
+                </Canvas>
+            </Suspense>
+
+            <div id="canvasAttach" />
+        </div>
     );
 }
 
