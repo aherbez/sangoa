@@ -9,7 +9,6 @@ const Pane3d = (props) => {
     const globalState = useContext(store);
     const { dispatch } = globalState;
     // console.log('pane3d', globalState);
-    
     // console.log('pane3d', Array.from(globalState.state.objLookup));
 
     const onSelect = (id) => {
@@ -32,9 +31,18 @@ const Pane3d = (props) => {
         );
     });
 
+    const clearSelection = (e) => {
+        console.log('clear selection');
+        dispatch({
+            type: 'select',
+            payload: -1
+        });
+    }
+
     return (
         <div className={styles.pane3d}>
-            <Canvas>
+            <Canvas
+            >
                 <directionalLight 
                     intensity={1.0} 
                     position={[5, 10, 5]}

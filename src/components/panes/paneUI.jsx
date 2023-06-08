@@ -49,6 +49,31 @@ const PaneUI = (props) => {
             payload: null
         });
     }
+
+    const nudgeLeft = () => {
+        dispatch({
+            type: 'move',
+            payload: [-1, 0, 0]
+        });
+    }
+    const nudgeRight = () => {
+        dispatch({
+            type: 'move',
+            payload: [1, 0, 0]
+        });
+    }
+    const nudgeUp = () => {
+        dispatch({
+            type: 'move',
+            payload: [0, 1, 0]
+        });
+    }
+    const nudgeDown = () => {
+        dispatch({
+            type: 'move',
+            payload: [0, -1, 0]
+        });
+    }
     
     return (
         <div className={styles.paneUI}>
@@ -58,6 +83,10 @@ const PaneUI = (props) => {
             <button onClick={inflate}>Inflate</button>
             <button onClick={deleteObj}>Delete</button>
             <hr />
+            <button onClick={nudgeLeft}>&lt;--</button>
+            <button onClick={nudgeUp}>^</button>
+            <button onClick={nudgeDown}>V</button>
+            <button onClick={nudgeRight}>--&gt;</button>
             { (globalState.state.selected !== -1) &&
                 <div>
                     <span>selected: </span>

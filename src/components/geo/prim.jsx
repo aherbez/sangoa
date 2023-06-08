@@ -4,7 +4,7 @@ import { store } from "../../data/store";
 const Prim = (props) => {
     const globalState = useContext(store);
     const { dispatch } = globalState;
-    console.log('prim', globalState);
+    // console.log('prim', globalState);
 
     const { data } = props;
 

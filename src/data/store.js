@@ -39,9 +39,6 @@ const StateProvider = ({children}) => {
             case 'remove':
                 console.log('remove')
                 return state;
-            case 'move':
-                console.log('move', action.payload);
-                return state;
             case 'inflate':
                 const obj = state.objLookup.get(state.selected);
                 obj.b = [...obj.b.map((v) => v * action.payload)]
@@ -53,6 +50,36 @@ const StateProvider = ({children}) => {
                     objLookup: newLookupInfl,
                 }
                 return newStateInfl;
+            case 'move':                
+                let objToMove = state.objLookup.get(state.selected);
+                if (!objToMove) {
+                    return state;
+                }
+                console.log('move', action.payload, objToMove);
+                objToMove.p = [...objToMove.p.map((v, i) => v + action.payload[i])];
+                
+                const newLookupMove = new Map(state.objLookup);
+                newLookupMove.set(state.selected, objToMove);
+                const newStateMove = {
+                    ...state,
+                    objLookup: newLookupMove,
+                }
+                return newStateMove;
+            case 'moveto':
+                let objToMoveTo = state.objLookup.get(state.selected);
+                if (!objToMoveTo) {
+                    return state;
+                }
+                console.log('moveto', action.payload);
+                objToMoveTo.p = [...action.payload];
+                
+                const newLookupMoveTo = new Map(state.objLookup);
+                newLookupMoveTo.set(state.selected, objToMoveTo);
+                const newStateMoveTo = {
+                    ...state,
+                    objLookup: newLookupMoveTo,
+                }
+                return newStateMoveTo;
             case 'delete':
                 const newLookupDel = new Map(state.objLookup);
                 newLookupDel.delete(state.selected);
