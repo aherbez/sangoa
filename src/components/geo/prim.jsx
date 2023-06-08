@@ -21,10 +21,10 @@ const Prim = (props) => {
                 );
             case 2:
                 return (
-                    <sphereGeometry args={data.s} />
+                    <sphereGeometry args={[data.b[0], 32, 32]} />
                 );
             default:
-                return <torusGeometry />;
+                return null;
         }
     }
     const geo = makeGeo(data);
