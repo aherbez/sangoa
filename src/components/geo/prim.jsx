@@ -13,13 +13,29 @@ const Prim = (props) => {
         props.onSelect(data.id);
     }
 
+    const makeGeo = (data) => {
+        switch (data.t) {
+            case 1:
+                return (
+                    <boxGeometry args={data.b} />
+                );
+            case 2:
+                return (
+                    <sphereGeometry args={data.s} />
+                );
+            default:
+                return <torusGeometry />;
+        }
+    }
+    const geo = makeGeo(data);
+
     const color = "gray"; // (data.id === globalState.state.selected) ? 'red' : 'gray';
 
     return (        
         <mesh position={data.p}
             onClick={click}
         >
-            <boxGeometry args={data.b} />
+            {geo}
             <meshStandardMaterial 
                 color={color} 
             />

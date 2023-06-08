@@ -1,6 +1,6 @@
 import { store } from "../../data/store";
 import { useContext } from "react";
-import { boxData, randPos } from "../../data/objHelpers";
+import { boxData, sphereData, randPos } from "../../data/objHelpers";
 import styles from "./panes.module.css"
 
 const PaneUI = (props) => {
@@ -21,6 +21,19 @@ const PaneUI = (props) => {
         });
     }
 
+    const addSphere = () => {
+        console.log('add sphere');
+
+        const s = sphereData(1);
+        s.p = randPos(10);
+
+        dispatch({
+            type: 'add',
+            payload: s
+        });
+    }
+
+
     const inflate = () => {
         console.log('inflate');
         dispatch({
@@ -40,6 +53,8 @@ const PaneUI = (props) => {
     return (
         <div className={styles.paneUI}>
             <button onClick={addBox}>Add Box</button>
+            <button onClick={addSphere}>Add Sphere</button>
+            <hr />
             <button onClick={inflate}>Inflate</button>
             <button onClick={deleteObj}>Delete</button>
             <hr />
