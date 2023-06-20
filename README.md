@@ -7,12 +7,13 @@
 - UI for moving primitives
 - UI to add primitives
 - process grid of cubes as tetrahedra
+- basic custom handle
+- maybe change to new context management?
 
 ## DONE
 - add primitive objects
 - basic editor scene
 - render objects from store
-
 - switch to next.js
 - initial SDF rendering
 - single tetrahedra processing

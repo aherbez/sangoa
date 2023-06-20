@@ -1,15 +1,38 @@
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { store } from "../../data/store";
 import { OrbitControls } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import Prim from "../geo/prim";
 import styles from "./panes.module.css"
+import { BaseHandle } from "../geo/baseHandle";
+
+const HandleTest = () => {
+    const { scene } = useThree();
+
+    useEffect(() => {
+        scene.add(new BaseHandle());
+    }, []);
+
+    return(
+        <group></group>
+    );
+}
+
 
 const Pane3d = (props) => {
     const globalState = useContext(store);
     const { dispatch } = globalState;
     // console.log('pane3d', globalState);
     // console.log('pane3d', Array.from(globalState.state.objLookup));
+
+    /*
+    const [handle, setHandle] = useState(null);
+
+    useEffect(() => {
+        setHandle(new BaseHandle());
+    }
+    , []);
+    */
 
     const onSelect = (id) => {
         console.log('select', id);
@@ -54,6 +77,7 @@ const Pane3d = (props) => {
                 <group>
                     {contents}
                 </group>
+                <HandleTest />
             </Canvas>
         </div>
     );

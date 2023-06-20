@@ -363,6 +363,7 @@ const SDF = (props) => {
             shaderRef.current.uniforms.shapesTex.value = bakeShapeTexture(props.objects);
             shaderRef.current.uniforms.numShapes.value = props.objects.length;
             console.log('uniforms', shaderRef.current.uniforms);
+            
             shaderRef.current.uniforms.shapesTex.needsUpdate = true;
             shaderRef.current.needsUpdate = true;
         }
